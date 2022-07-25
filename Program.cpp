@@ -53,23 +53,74 @@ void MainMenu()
 
 void LocalMenu()
 {
-	std::cout << "\n\nPlayer 1 is X, Player 2 is O\n";
 
-	/*
+
+	int x, y, winner;
+	int turn = 1;
+	bool hasWon = false;
+	std::string repeat;
+
+	std::cout << "\n\nPlayer 1 is X, Player 2 is O\n";
+	std::cout << "Player 1 starts...\n";
+
 	do
 	{
-		OutputTable();
+		while (hasWon == false)
+		{
+			OutputTable();
+
+			std::cout << "Enter the x coordinate: ";
+			std::cin >> x;
+
+			std::cout << "\nEnter the y coordinate: ";
+			std::cin >> y;
+
+			switch (turn)
+			{
+			case 1: // player 1
+				table[y][x] = 'X';
+				hasWon = CheckIfWon();
+				if (hasWon == true)
+				{
+					winner = turn;
+				}
+				else
+				{
+					turn++;
+				}
+				break;
+
+			case 2: // player 2
+				table[y][x] = 'O';
+				hasWon = CheckIfWon();
+				if (hasWon == true)
+				{
+					winner = turn;
+				}
+				else
+				{
+					turn--;
+				}
+				break;
 
 
+			}
 
-	} while ();
-	*/
+		}
+
+		std::cout << "Player " << winner << " has won!\n\n";
+
+		std::cout << "Would you like to play again? y/n: ";
+	} while (repeat == "y");
+
+	
 }
 
 void OutputTable()
 {
 	std::cout << "\n";
-	std::cout << "0 1 2";
+	std::cout << "\n";
+	std::cout << "0 1 2   <- x";
 	for (int i = 0; i < 3; i++)
 	{
 		std::cout << "\n";
@@ -80,18 +131,10 @@ void OutputTable()
 		}
 		std::cout << i;
 	}
+	std::cout << "\n";
+	std::cout << "\n";
 }
 
-void EditTable(int x, int y, char val)
-{
-	std::cin >> x;
-	std::cin >> y;
-	std::cin >> val;
-
-
-	table[y][x] = val;
-	OutputTable();
-}
 
 bool CheckIfWon()
 {
