@@ -2,25 +2,15 @@
 #include "Program.h"
 
 //         y  x
-char table[3][3] = {{'O','X','O' },	 
-					{'O',' ','O' },
-					{'X',' ',' ' } };
-
-/*
 char table[3][3] = {{' ',' ',' ' },
 					{' ',' ',' ' },
 					{' ',' ',' ' } };
-
-*/
-
-
 
 
 int main()
 {
 	MainMenu();
 }
-
 
 void MainMenu()
 {
@@ -59,23 +49,23 @@ void MainMenu()
 
 void LocalMenu()
 {
+	std::string repeat;
 
 
-	
-
-	int turn = 1;
-
-	int winner = NULL;
-
-	bool gameOver = false;
-
-	std::string repeat = NULL;
-
-	std::cout << "\n\nPlayer 1 is X, Player 2 is O\n";
-	std::cout << "Player 1 starts...\n";
 
 	do
 	{
+		int turn = 1;
+
+		int winner = NULL;
+
+		bool gameOver = false;
+
+		ResetTable();
+
+		std::cout << "\n\nPlayer 1 is X, Player 2 is O\n";
+		std::cout << "Player 1 starts...\n";
+
 		while (gameOver == false)
 		{
 			OutputTable();
@@ -87,12 +77,14 @@ void LocalMenu()
 
 					EditTable('X', turn);
 					gameOver = GameOver(turn, winner);
+					turn++;
 					break;
 
 				case 2: // player 2
 					
 					EditTable('O', turn);
 					gameOver = GameOver(turn, winner);
+					turn--;
 					break;
 
 			}
@@ -102,39 +94,22 @@ void LocalMenu()
 
 		if(winner >= 0)
 		{
-			std::cout << "Player " << winner << " has won!\n\n";
+			OutputTable();
+			std::cout << "\nPlayer " << winner << " has won!\n\n";
 		}
 		else
 		{
-			std::cout << "Draw!\n\n";
+			OutputTable();
+			std::cout << "\nDraw!\n\n";
 		}
 		
 
 		std::cout << "Would you like to play again? y/n: ";
-
+		std::cin >> repeat;
 
 	} while (repeat == "y");
 
 	
-}
-
-void OutputTable()
-{
-	std::cout << "\n";
-	std::cout << "\n";
-	std::cout << "0 1 2   <- x";
-	for (int i = 0; i < 3; i++)
-	{
-		std::cout << "\n";
-
-		for(int j = 0; j < 3; j++)
-		{
-			std::cout<< table[i][j] << "|";
-		}
-		std::cout << i;
-	}
-	std::cout << "\n";
-	std::cout << "\n";
 }
 
 void EditTable(char val, int turn)
@@ -146,10 +121,10 @@ void EditTable(char val, int turn)
 
 	while (posValid == false)
 	{
-		std::cout << "\nPlayer " << turn + 1 << " Enter the x coordinate: ";
+		std::cout << "\nPlayer " << turn << " Enter the x coordinate: ";
 		std::cin >> x;
 
-		std::cout << "\nPlayer " << turn + 1 << " Enter the y coordinate: ";
+		std::cout << "\nPlayer " << turn << " Enter the y coordinate: ";
 		std::cin >> y;
 
 		if(table[y][x] == ' ')
@@ -244,8 +219,38 @@ bool GameOver(int turn, int &winner)
 
 }
 
+void OutputTable()
+{
+	std::cout << "\n";
+	std::cout << "\n";
+	std::cout << "0 1 2   <- x";
+	for (int i = 0; i < 3; i++)
+	{
+		std::cout << "\n";
+
+		for (int j = 0; j < 3; j++)
+		{
+			std::cout << table[i][j] << "|";
+		}
+		std::cout << i;
+	}
+	std::cout << "\n";
+	std::cout << "\n";
+}
+
+void ResetTable()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			table[i][j] = ' ';
+		}
+	}
+}
 
 
+//to do
 /*
 TO DO:
 
