@@ -3,7 +3,8 @@
 
 
 void OutputTable();
-void EditTable(int x, int y, char val);
-bool CheckIfWon();
+void EditTable(char val, int turn);
+int CheckGameState();
+bool GameOver(int turn, int& winner);
 void MainMenu();
 void LocalMenu();
