@@ -1,20 +1,27 @@
 #include <iostream>
 #include "Program.h"
+#include "AI.h"
 
-//         y  x
-char table[3][3] = {{' ',' ',' ' },
-					{' ',' ',' ' },
-					{' ',' ',' ' } };
+char board[3][3] = { {' ',' ',' ' },
+				{' ',' ',' ' },
+				{' ',' ',' ' } };
 
+struct Move
+{
+	int row, col;
+};
+
+
+int gameType;
 
 int main()
 {
-	MainMenu();
+    MainMenu();
+	//testing();
 }
 
 void MainMenu()
 {
-	int gameType;
 	do
 	{
 		std::cout << "0 : Quit\n";
@@ -32,6 +39,7 @@ void MainMenu()
 				LocalMenu();
 				break;
 			case 2:
+				AIMenu();
 				std::cout  << "Not yet implemented\n";
 				break;
 			default:
@@ -51,55 +59,44 @@ void LocalMenu()
 {
 	std::string repeat;
 
-
-
 	do
 	{
 		int turn = 1;
-
 		int winner = NULL;
-
 		bool gameOver = false;
 
-		ResetTable();
+		Resetboard();
 
-		std::cout << "\n\nPlayer 1 is X, Player 2 is O\n";
+		std::cout << "\n\nPlayer 1 is x, Player 2 is O\n";
 		std::cout << "Player 1 starts...\n";
 
 		while (gameOver == false)
 		{
-			OutputTable();
-
+			Outputboard();
 			switch (turn)
 			{
 				case 1: // player 1
-
-
-					EditTable('X', turn);
+					Editboard('x', turn);
 					gameOver = GameOver(turn, winner);
 					turn++;
 					break;
 
 				case 2: // player 2
-					
-					EditTable('O', turn);
+					Editboard('o', turn);
 					gameOver = GameOver(turn, winner);
 					turn--;
 					break;
-
 			}
-
 		}
 
+		Outputboard();
 
 		if(winner >= 0)
 		{
-			OutputTable();
 			std::cout << "\nPlayer " << winner << " has won!\n\n";
 		}
 		else
 		{
-			OutputTable();
 			std::cout << "\nDraw!\n\n";
 		}
 		
@@ -112,12 +109,67 @@ void LocalMenu()
 	
 }
 
-void EditTable(char val, int turn)
+void AIMenu()
+{
+	std::string repeat;
+
+	do
+	{
+		int turn = 1;
+		int winner = NULL;
+		bool gameOver = false;
+
+		Resetboard();
+
+		std::cout << "\n\nPlayer is O, AI is x\n";
+		std::cout << "Player starts...\n";
+
+		while (gameOver == false)
+		{
+			Outputboard();
+			switch (turn)
+			{
+			case 1: // player 1
+				Editboard('x', turn);
+				gameOver = GameOver(turn, winner);
+				turn++;
+				break;
+
+			case 2: // AI
+
+				std::cout << "\n\nAi turn";
+
+				Move bestMove = FindBestMove(board);
+
+				board[bestMove.col][bestMove.row] = 'o';
+
+				gameOver = GameOver(turn, winner);
+				turn--;
+				break;
+			}
+		}
+
+		Outputboard();
+
+		if(winner == 2)
+		{
+			std::cout << "\nAI has won!\n\n";
+		}
+		else
+		{
+			std::cout << "\nYou have won!\n\n";
+		}
+
+		std::cout << "Would you like to play again? y/n: ";
+		std::cin >> repeat;
+
+	} while (repeat == "y");
+}
+
+void Editboard(char val, int turn)
 {
 	int x, y = NULL;
 	bool posValid = false;
-
-
 
 	while (posValid == false)
 	{
@@ -127,9 +179,9 @@ void EditTable(char val, int turn)
 		std::cout << "\nPlayer " << turn << " Enter the y coordinate: ";
 		std::cin >> y;
 
-		if(table[y][x] == ' ')
+		if(board[y][x] == ' ')
 		{
-			table[y][x] = val;
+			board[y][x] = val;
 			posValid = true;
 		}
 		else
@@ -137,15 +189,12 @@ void EditTable(char val, int turn)
 			std::cout << "\n\nposition (" << x << "," << y << ") has already been used, please enter another position";
 			posValid = false;
 		}
-
 	}
-
-
 }
 
 bool GameOver(int turn, int &winner)
 {
-	char cell[3]; // array for positions on the table e.g table[1][2]
+	char cell[3]; // array for positions on the board e.g board[1][2]
 	int i, j;
 
 	int count = 0;
@@ -155,7 +204,7 @@ bool GameOver(int turn, int &winner)
 	{
 		for (j = 0; j < 3; j++) //x
 		{
-			cell[j] = table[i][j];
+			cell[j] = board[i][j];
 		}
 
 		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
@@ -169,13 +218,12 @@ bool GameOver(int turn, int &winner)
 		}
 	}
 
-
 	//check columns
 	for (i = 0; i < 3; i++) //y
 	{
 		for (j = 0; j < 3; j++) //x
 		{
-			cell[j] = table[j][i];
+			cell[j] = board[j][i];
 		}
 
 		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
@@ -188,7 +236,7 @@ bool GameOver(int turn, int &winner)
 	//check diagonals
 	for (i = 0; i < 3; i++)
 	{
-		cell[i] = table[i][i];
+		cell[i] = board[i][i];
 
 		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
 		{
@@ -198,7 +246,7 @@ bool GameOver(int turn, int &winner)
 	}
 	for (i = 2, j = 0; i >= 0, j < 3; i--, j++)
 	{
-		cell[j] = table[j][i];
+		cell[j] = board[j][i];
 
 		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
 		{
@@ -219,7 +267,7 @@ bool GameOver(int turn, int &winner)
 
 }
 
-void OutputTable()
+void Outputboard()
 {
 	std::cout << "\n";
 	std::cout << "\n";
@@ -230,7 +278,7 @@ void OutputTable()
 
 		for (int j = 0; j < 3; j++)
 		{
-			std::cout << table[i][j] << "|";
+			std::cout << board[i][j] << "|";
 		}
 		std::cout << i;
 	}
@@ -238,109 +286,29 @@ void OutputTable()
 	std::cout << "\n";
 }
 
-void ResetTable()
+void Resetboard()
 {
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			table[i][j] = ' ';
+			board[i][j] = ' ';
 		}
 	}
 }
 
-
-//to do
-/*
-TO DO:
-
-	Change the win check to int for -1:loss, 0:draw, 1:win.
-
-	Check if whole table is full and no winners to confirm draw.
-
-	Check if player tries to enter co-ordinates that have already been used.
-
-	Fix local menu not re-doing if user enters y.
-
-
-
-
-*/
-
-// other code
-/*int CheckGameState() // 
+bool IsMoveLeft()
 {
-	char cell[3];
-	int i;
-	int j;
-
-	int count = 0;
-
-	//check rows
-	for (i = 0; i < 3; i++) //y
+	for (int i = 0; i < 3; i++)
 	{
-		for (j = 0; j < 3; j++) //x
+		for (int j = 0; j < 3; j++)
 		{
-			cell[j] = table[i][j];			
-		}
-
-		if((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
-		{
-			//std::cout << "\nrow win\n";
-			return 2; // win
-		}
-		else if(cell[0] != ' ' && cell[1] != ' ' && cell[2] != ' ') // check draw
-		{
-			count++;
+			if (board[i][j] == ' ')
+			{
+				return true;
+			}
 		}
 	}
-
-	//check columns
-	for (i = 0; i < 3; i++) //y
-	{
-		for (j = 0; j < 3; j++) //x
-		{
-			cell[j] = table[j][i];
-		}
-
-		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
-		{
-			//std::cout << "\ncol win\n";
-			return 2;
-		}
-	}
-
-	//check diagonals
-	for (i = 0; i < 3; i++)
-	{
-		cell[i] = table[i][i];
-
-		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
-		{
-			//std::cout << "\ndia_1 win\n";
-			return 2;
-		}
-	}
-	for (i = 2, j = 0; i >= 0, j < 3; i--, j++)
-	{
-		cell[j] = table[j][i];
-
-		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
-		{
-			//std::cout << "\ndia_2 win\n";
-			return 2;
-		}
-	}
-
-	if (count == 3)
-	{
-		return 1; // draw
-	}
-	else
-	{
-		return 0; // continue
-	}
-
-	return -1; //loss
+	return false;
 }
-*/
+

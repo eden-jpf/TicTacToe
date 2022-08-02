@@ -2,10 +2,18 @@
 #include <iostream>
 
 
-void OutputTable();
-void EditTable(char val, int turn);
+void Outputboard();
+void Editboard(char val, int turn);
+bool IsMoveLeft();
+
 void MainMenu();
 void LocalMenu();
-void ResetTable();
+void AIMenu();
+
+
+void Resetboard();
 
 bool GameOver(int turn, int& winner);
+
+
+
