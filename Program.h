@@ -2,20 +2,26 @@
 #include <iostream>
 
 
+extern struct Move 
+{
+	int x, y;
+};
 
+Move GetMove(int turn);
 
-void Outputboard();
-void Editboard(char val, int turn);
-bool IsMoveLeft();
+void EditBoard(char val, int turn, Move move);
 
 void MainMenu();
+
 void LocalMenu();
+
 void AIMenu();
 
+void Outputboard();
 
 void Resetboard();
 
 bool GameOver(int turn, int& winner);
 
-
+bool IsMoveLeft();
 

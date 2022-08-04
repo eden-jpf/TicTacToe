@@ -1,26 +1,21 @@
 #include <iostream>
 #include "Program.h"
 #include "AI.h"
-
-char board[3][3] = { {' ',' ',' ' },
+		// y x			//x
+char board[3][3] = { {' ',' ',' ' }, //y
 				{' ',' ',' ' },
 				{' ',' ',' ' } };
-
-struct Move
-{
-	int row, col;
-};
-
-int gameType;
 
 int main()
 {
     MainMenu();
-	//testing();
 }
 
 void MainMenu()
 {
+	int gameType;
+	
+	// Just a menu to chose what type of game
 	do
 	{
 		std::cout << "0 : Quit\n";
@@ -54,9 +49,11 @@ void MainMenu()
 
 }
 
-void LocalMenu()
+void LocalMenu() //Function to handle some logic and UI for local 1v1
 {
 	std::string repeat;
+
+	Move playerMove; //struct to store player input (x,y)
 
 	do
 	{
@@ -64,7 +61,7 @@ void LocalMenu()
 		int winner = NULL;
 		bool gameOver = false;
 
-		Resetboard();
+		Resetboard(); // sets all values of board = to ' '
 
 		std::cout << "\n\nPlayer 1 is x, Player 2 is O\n";
 		std::cout << "Player 1 starts...\n";
@@ -75,13 +72,15 @@ void LocalMenu()
 			switch (turn)
 			{
 				case 1: // player 1
-					Editboard('x', turn);
-					gameOver = GameOver(turn, winner);
-					turn++;
+					playerMove = GetMove(turn); //Get user input
+					EditBoard('x', turn, playerMove); //Check input and edit the board
+					gameOver = GameOver(turn, winner); 
+					turn++; //increment turn if the game isnt over
 					break;
 
 				case 2: // player 2
-					Editboard('o', turn);
+					playerMove = GetMove(turn);
+					EditBoard('o', turn, playerMove);
 					gameOver = GameOver(turn, winner);
 					turn--;
 					break;
@@ -108,10 +107,8 @@ void LocalMenu()
 	
 }
 
-
 void AIMenu()
 {
-
 	std::string repeat;
 
 	do
@@ -119,6 +116,9 @@ void AIMenu()
 		int turn = 1;
 		int winner = NULL;
 		bool gameOver = false;
+
+		Move aiMove; //struct for AI input (x,y)
+		Move playerMove;
 
 		Resetboard();
 
@@ -131,18 +131,18 @@ void AIMenu()
 			switch (turn)
 			{
 				case 1: // player 1
-					Editboard('x', turn);
+					playerMove = GetMove(turn);
+					EditBoard('x', turn, playerMove);
 					gameOver = GameOver(turn, winner);
 					turn++;
 					break;
 
 				case 2: // AI
 
-
-
 					std::cout << "\n\nAi turn";
-					Move bestMove = FindBestMove(board);
-					board[bestMove.row][bestMove.col] = 'o';
+
+					aiMove = FindBestMove(board); //finds the optimal move
+					board[aiMove.y][aiMove.x] = 'o'; //edit board
 					gameOver = GameOver(turn, winner);
 					turn--;
 					break;
@@ -166,27 +166,34 @@ void AIMenu()
 	} while (repeat == "y");
 }
 
-void Editboard(char val, int turn)
+Move GetMove(int turn) //Get player input
 {
-	int x, y = NULL;
+	Move move;
+
+	std::cout << "\nPlayer " << turn << " Enter the x coordinate: ";
+	std::cin >> move.x;
+
+	std::cout << "\nPlayer " << turn << " Enter the y coordinate: ";
+	std::cin >> move.y;
+
+	return move;
+}
+
+void EditBoard(char val, int turn, Move move) //check the player input and edit board according to input
+{
 	bool posValid = false;
 
 	while (posValid == false)
 	{
-		std::cout << "\nPlayer " << turn << " Enter the x coordinate: ";
-		std::cin >> x;
-
-		std::cout << "\nPlayer " << turn << " Enter the y coordinate: ";
-		std::cin >> y;
-
-		if(board[y][x] == ' ')
+		if(board[move.y][move.x] == ' ')
 		{
-			board[y][x] = val;
+			board[move.y][move.x] = val;
 			posValid = true;
 		}
 		else
 		{
-			std::cout << "\n\nposition (" << x << "," << y << ") has already been used, please enter another position";
+			std::cout << "\n\nPosition (" << move.x << "," << move.y << ") has already been used, please enter another position";
+			move = GetMove(turn);
 			posValid = false;
 		}
 	}
@@ -194,12 +201,12 @@ void Editboard(char val, int turn)
 
 bool GameOver(int turn, int &winner)
 {
+	/*
+
 	char cell[3]; // array for positions on the board e.g board[1][2]
 	int i, j;
 
-	int count = 0;
-
-	//check rows
+	//check ys
 	for (i = 0; i < 3; i++) //y
 	{
 		for (j = 0; j < 3; j++) //x
@@ -212,13 +219,10 @@ bool GameOver(int turn, int &winner)
 			winner = turn;
 			return true;
 		}
-		else if (cell[0] != ' ' && cell[1] != ' ' && cell[2] != ' ') // check draw
-		{
-			count++;
-		}
+
 	}
 
-	//check columns
+	//check xumns
 	for (i = 0; i < 3; i++) //y
 	{
 		for (j = 0; j < 3; j++) //x
@@ -255,16 +259,56 @@ bool GameOver(int turn, int &winner)
 		}
 	}
 
-	if (count == 3)
+
+
+
+	if(IsMoveLeft() == false)
 	{
-		winner = -1;
-		return true; // draw
-	}
-	else
-	{
-		return false; // continue
+		return true;
 	}
 
+	return false;
+	*/
+
+	// Checking for ys for X or O victory.
+	for (int y = 0; y < 3; y++)
+	{
+		if (board[y][0] == board[y][1] && board[y][1] == board[y][2] && board[y][0] != ' ')
+		{
+			winner = turn;
+			return true;
+		}
+	}
+
+	// Checking for xumns for X or O victory.
+	for (int x = 0; x < 3; x++)
+	{
+		if (board[0][x] == board[1][x] && board[1][x] == board[2][x] && board[0][x] != ' ')
+		{
+			winner = turn;
+			return true;
+		}
+	}
+
+	// Checking for Diagonals for X or O victory.
+	if (board[0][0] == board[1][1] && board[1][1] == board[2][2] && board[1][1] != ' ')
+	{
+		winner = turn;
+		return true;
+	}
+
+	if (board[0][2] == board[1][1] && board[1][1] == board[2][0] && board[1][1] != ' ')
+	{
+		winner = turn;
+		return true;
+	}
+
+	if (IsMoveLeft() == false)
+	{
+		return true; //draw
+	}
+
+	return false; //continue
 }
 
 void Outputboard()
@@ -278,7 +322,7 @@ void Outputboard()
 
 		for (int j = 0; j < 3; j++)
 		{
-			std::cout << board[i][j] << "|";
+			std::cout << board[i][j] << "|"; //lines to seperate board
 		}
 		std::cout << i;
 	}
