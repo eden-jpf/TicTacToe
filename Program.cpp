@@ -11,7 +11,6 @@ struct Move
 	int row, col;
 };
 
-
 int gameType;
 
 int main()
@@ -109,8 +108,10 @@ void LocalMenu()
 	
 }
 
+
 void AIMenu()
 {
+
 	std::string repeat;
 
 	do
@@ -121,7 +122,7 @@ void AIMenu()
 
 		Resetboard();
 
-		std::cout << "\n\nPlayer is O, AI is x\n";
+		std::cout << "\n\nPlayer is x, AI is o\n";
 		std::cout << "Player starts...\n";
 
 		while (gameOver == false)
@@ -129,23 +130,22 @@ void AIMenu()
 			Outputboard();
 			switch (turn)
 			{
-			case 1: // player 1
-				Editboard('x', turn);
-				gameOver = GameOver(turn, winner);
-				turn++;
-				break;
+				case 1: // player 1
+					Editboard('x', turn);
+					gameOver = GameOver(turn, winner);
+					turn++;
+					break;
 
-			case 2: // AI
+				case 2: // AI
 
-				std::cout << "\n\nAi turn";
 
-				Move bestMove = FindBestMove(board);
 
-				board[bestMove.col][bestMove.row] = 'o';
-
-				gameOver = GameOver(turn, winner);
-				turn--;
-				break;
+					std::cout << "\n\nAi turn";
+					Move bestMove = FindBestMove(board);
+					board[bestMove.row][bestMove.col] = 'o';
+					gameOver = GameOver(turn, winner);
+					turn--;
+					break;
 			}
 		}
 

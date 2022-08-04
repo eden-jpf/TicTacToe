@@ -2,6 +2,8 @@
 #include <iostream>
 
 
+
+
 void Outputboard();
 void Editboard(char val, int turn);
 bool IsMoveLeft();

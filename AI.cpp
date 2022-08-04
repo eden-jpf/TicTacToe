@@ -2,7 +2,7 @@
 #include "Program.h"
 #include "AI.h"
 
-struct Move
+struct Move 
 {
 	int row, col;
 };
@@ -12,19 +12,20 @@ char player = 'x', opponent = 'o';
 void testing()
 {
     //         y  x
-
-    /*
-    char board[3][3] = {{'x','x','o' },
+    char board[3][3] = {{'o','x','o' },
                         {'o','x',' ' },
-                        {' ','o','o' } };
+                        {'x',' ','o' } };
 
     Move bestMove = FindBestMove(board);
 
     std::cout << "\n\nThe best move is: " << bestMove.row << " and " << bestMove.col;
     
-    */
+    
 
 }
+
+
+
 
 int Minimax(char board[3][3], int depth, bool isMax)
 {
@@ -58,6 +59,7 @@ int Minimax(char board[3][3], int depth, bool isMax)
                 // Check if cell is empty
                 if (board[i][j] == ' ')
                 {
+                    //std::cout << "\n\nmax:" << i << j;
                     // Make the move
                     board[i][j] = player;
 
@@ -86,6 +88,7 @@ int Minimax(char board[3][3], int depth, bool isMax)
                 // Check if cell is empty
                 if (board[i][j] == ' ')
                 {
+                   // std::cout << "\n\nmin:" << i << j;
                     // Make the move
                     board[i][j] = opponent;
 
@@ -109,8 +112,7 @@ int Evaluate(char b[3][3])
     // Checking for Rows for X or O victory.
     for (int row = 0; row < 3; row++)
     {
-        if (b[row][0] == b[row][1] &&
-            b[row][1] == b[row][2])
+        if (b[row][0] == b[row][1] && b[row][1] == b[row][2])
         {
             if (b[row][0] == player)
                 return +10;
@@ -122,8 +124,7 @@ int Evaluate(char b[3][3])
     // Checking for Columns for X or O victory.
     for (int col = 0; col < 3; col++)
     {
-        if (b[0][col] == b[1][col] &&
-            b[1][col] == b[2][col])
+        if (b[0][col] == b[1][col] && b[1][col] == b[2][col])
         {
             if (b[0][col] == player)
                 return +10;
@@ -150,115 +151,15 @@ int Evaluate(char b[3][3])
             return -10;
     }
 
-    /*
-
-	char cell[3]; // array for positions on the board e.g board[1][2]
-	int i, j;
-
-
-	//check rows
-	for (i = 0; i < 3; i++) //y
-	{
-		for (j = 0; j < 3; j++) //x
-		{
-			cell[j] = board[i][j];
-		}
-
-		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
-		{
-            switch (cell[0])
-            {
-            case 'X':
-                return +10;
-                break;
-            case 'O':
-                return -10;
-                break;
-            }
-		}
-
-	}
-
-	//check columns
-	for (i = 0; i < 3; i++) //y
-	{
-		for (j = 0; j < 3; j++) //x
-		{
-			cell[j] = board[j][i];
-		}
-
-		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
-		{
-            switch (cell[0])
-            {
-            case 'X':
-                return +10;
-                break;
-            case 'O':
-                return -10;
-                break;
-            }
-		}
-	}
-
-	//check diagonals
-	for (i = 0; i < 3; i++)
-	{
-		cell[i] = board[i][i];
-
-		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
-		{
-            switch (cell[0])
-            {
-            case 'X':
-                return +10;
-                break;
-            case 'O':
-                return -10;
-                break;
-            }
-		}
-	}
-	for (i = 2, j = 0; i >= 0, j < 3; i--, j++)
-	{
-		cell[j] = board[j][i];
-
-		if ((cell[0] == cell[1] && cell[1] == cell[2]) && cell[0] != ' ')
-		{
-			switch (cell[0])
-			{
-                case 'X':
-                    return +10;
-                    break;
-                case 'O':
-                    return -10;
-                    break;
-			}
-		}
-	}
-
-    */
 
     return 0;
 }
 
-bool IsMoveLeft(char board[3][3])
-{
-    for (int i = 0; i < 3; i++)
-    {
-        for(int j = 0; j < 3; j++)
-        {
-            if(board[i][j] == ' ')
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
 
 Move FindBestMove(char board[3][3])
 {
+
+
     int bestVal = -1000;
     Move bestMove;
     bestMove.row = -1;
@@ -270,6 +171,7 @@ Move FindBestMove(char board[3][3])
         {
             if (board[i][j] == ' ')
             {
+                
                 board[i][j] = player;
 
                 int moveVal = Minimax(board, 0, false);
@@ -290,4 +192,20 @@ Move FindBestMove(char board[3][3])
     std::cout << "\n\nThe value of the best move is: " << bestVal;
     std::cout << "\n\nThe best move is row: " << bestMove.row << " and col: " << bestMove.col;
     return bestMove;
+}
+
+
+bool IsMoveLeft(char board[3][3])
+{
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            if (board[i][j] == ' ')
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
